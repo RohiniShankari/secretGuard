@@ -2,9 +2,13 @@
 
 **An Explainable GitHub Repository Secret Scanner**
 
-SecretGuard is a Java Spring Boot-based security tool that scans GitHub repositories to identify potentially exposed secrets such as API keys, access tokens, passwords, and private keys.
+[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen)](https://secret-guard-5c3kck4g5-sankari.vercel.app/)
 
-Unlike basic pattern-matching scanners, SecretGuard combines multiple detection techniques to improve detection quality, explain why a value was flagged, and identify secrets that may have been exposed in previous Git commits.
+**Live Application:** https://secret-guard-5c3kck4g5-sankari.vercel.app/
+
+SecretGuard is a Java Spring Boot-based security tool that scans public GitHub repositories to identify potentially exposed secrets such as API keys, access tokens, passwords, and private keys.
+
+Unlike basic pattern-matching scanners, SecretGuard combines multiple detection techniques to improve detection quality, explain why a value was flagged, and analyze potential exposures in Git commit history.
 
 ## 🚨 Problem
 
@@ -16,33 +20,34 @@ Even when these secrets are removed from the latest version of a project, they m
 
 SecretGuard scans GitHub repositories using a combination of pattern matching, contextual analysis, and entropy-based detection.
 
-It provides masked findings with explanations, confidence scores, and risk classifications. It also analyzes Git commit history to identify secrets that were introduced in earlier commits, even if they are no longer present in the current files.
+It provides masked findings with explanations, confidence scores, and risk classifications. Its Git history analysis can also identify secrets introduced in earlier commits, even if they are no longer present in the current files.
 
 ## ✨ Key Features
 
 - **GitHub Repository Scanning:** Scan public GitHub repositories using their repository URLs.
 - **Pattern-Based Detection:** Detect common secret formats, including AWS access keys, GitHub tokens, and private key headers.
-- **Contextual Analysis:** Analyze sensitive keywords around potential secrets to improve detection.
+- **Contextual Analysis:** Analyze sensitive keywords around potential secrets.
 - **Entropy Analysis:** Identify potentially sensitive values based on randomness and unpredictability.
 - **Placeholder Detection:** Suppress common dummy values and placeholder credentials.
 - **Confidence Scoring:** Assign confidence scores using multiple detection signals.
 - **Risk Classification:** Categorize findings based on severity and confidence.
-- **Secret Masking:** Mask detected values to avoid exposing credentials in scan results.
-- **Git History Scanning:** Identify secrets introduced in previous commits, even when removed from the latest snapshot.
-- **Exposure Tracking:** Identify whether a historical secret is still present or has been removed from the current repository snapshot.
+- **Secret Masking:** Mask detected values in scan results.
+- **Git History Analysis:** Identify secrets introduced in previous commits.
+- **Exposure Tracking:** Compare historical findings with the current repository snapshot to identify whether a secret is still present or has been removed from the current snapshot.
 
-## 🧠 What Makes SecretGuard Unique?
+## 🧠 What Makes SecretGuard Different?
 
 SecretGuard focuses on **explainable detection rather than simply flagging matching strings**.
 
 It combines:
+
 - Pattern matching to recognize known credential formats.
 - Contextual analysis to understand where potential secrets appear.
 - Shannon entropy to identify unpredictable values.
 - Confidence scoring to explain the strength of detection.
 - Git history analysis to uncover previously committed secrets.
 
-This combination helps developers understand not only what was detected, but also why it was detected and whether it remains in the current repository.
+This helps developers understand not only what was detected, but also why it was detected.
 
 ## 🛠️ Tech Stack
 
@@ -68,12 +73,16 @@ This combination helps developers understand not only what was detected, but als
 - JUnit 5
 - Mockito
 
+**Deployment**
+- Render (Backend)
+- Vercel (Frontend)
+
 ## 🏗️ Project Structure
 
 ```text
-secretGuard/
+SecretGuard/
 │
-├── secretGuard/              # Spring Boot backend
+├── secretGuard/                 # Spring Boot backend
 │   ├── src/
 │   │   ├── main/java/
 │   │   │   └── com/example/secretGuard/
@@ -86,12 +95,17 @@ secretGuard/
 │   │   │       ├── validator/
 │   │   │       └── config/
 │   │   └── test/
+│   ├── Dockerfile
 │   └── pom.xml
 │
-└── secretguard-frontend/      # React frontend
+└── secretguard-frontend/         # React frontend
+    ├── src/
+    ├── public/
+    ├── package.json
+    └── ...
 ```
 
-## ⚙️ Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
 
@@ -108,15 +122,15 @@ cd secretGuard
 
 ### 2. Start the Backend
 
-Navigate to the backend directory:
+Open a terminal and navigate to the backend directory:
 
 ```bash
 cd secretGuard
 ```
 
-Run the Spring Boot application on Windows:
+On Windows, run:
 
-```powershell
+```cmd
 .\mvnw.cmd spring-boot:run
 ```
 
@@ -124,12 +138,34 @@ The backend will run at:
 
 `http://localhost:8080`
 
-### 3. Start the Frontend
+### 3. Configure the Frontend for Local Development
 
-Open another terminal and navigate to the frontend directory:
+The deployed frontend uses the publicly deployed Render backend URL.
+
+When running the frontend locally, you must change the API base URL in the frontend source code.
+
+Find the API URL configuration or the file containing the backend `fetch()` request.
+
+Replace the deployed Render backend URL with:
+
+```javascript
+http://localhost:8080
+```
+
+For example:
+
+```javascript
+const API_URL = "http://localhost:8080";
+```
+
+**Important:** Use the local URL only when running the frontend and backend on your own computer. The deployed Vercel application must continue using the deployed Render backend URL.
+
+### 4. Start the Frontend
+
+Open another terminal from the repository root:
 
 ```bash
-cd secretGuard/secretguard-frontend
+cd secretguard-frontend
 ```
 
 Install dependencies:
@@ -144,15 +180,48 @@ Start the development server:
 npm run dev
 ```
 
-Open:
+Open the frontend at:
 
 `http://localhost:5173`
+
+### 5. Local Application URLs
+
+| Component | URL |
+|---|---|
+| Local frontend | http://localhost:5173 |
+| Local backend | http://localhost:8080 |
+| Live frontend | https://secret-guard-5c3kck4g5-sankari.vercel.app/ |
+
+Both the backend and frontend must be running locally for local scanning to work.
+
+If CORS is enabled in the backend, make sure it allows `http://localhost:5173`.
+
+## 🌐 Live Deployment
+
+SecretGuard is deployed using:
+
+- **Frontend:** Vercel
+- **Backend:** Render
+
+Visit the live application:
+
+**[Open SecretGuard](https://secret-guard-5c3kck4g5-sankari.vercel.app/)**
+
+The frontend communicates with the deployed Spring Boot backend to process repository scan requests.
+
+Note: The backend may take some time to respond if the hosting service has placed it in an idle state.
 
 ## 🔌 API Endpoint
 
 ### Scan a GitHub Repository
 
-**Endpoint:** `POST /api/github-scan`
+**Method:** `POST`
+
+**Endpoint:**
+
+```text
+/api/github-scan
+```
 
 **Request Body:**
 
@@ -189,10 +258,11 @@ Open:
 - Binary or unsupported files are skipped.
 - Temporary cloned repositories are cleaned up after scanning.
 - Confidence scores and risk classifications are heuristic indicators, not guarantees that a credential is valid or exploitable.
+- Secret detection does not verify whether a credential is active.
 
-**Note:** Removing a secret from the latest commit does not invalidate the credential or remove it from Git history. Exposed credentials should be rotated or revoked.
+**Important:** Removing a secret from the latest commit does not invalidate the credential or remove it from Git history. Exposed credentials should be rotated or revoked.
 
-## 🚀 Future Improvements
+## 🚧 Future Improvements
 
 - More credential patterns and provider-specific detection rules.
 - Improved detection of binary files and complex repository structures.
@@ -210,4 +280,4 @@ Open:
 
 ---
 
-*SecretGuard — Detect secrets. Understand exposure. Secure your code.*
+*SecretGuard — Detect secrets. Understand exposure. Secure your code.*etGuard — Detect secrets. Understand exposure. Secure your code.*
