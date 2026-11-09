@@ -5,7 +5,7 @@ import {
   ShieldAlert, ShieldCheck, X
 } from "lucide-react";
 
-const DEFAULT_API = import.meta.env.VITE_API_BASE_URL || "https://secretguard-backend.onrender.com";
+const DEFAULT_API = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 
 function App() {
   const [page, setPage] = useState("Scanner");
