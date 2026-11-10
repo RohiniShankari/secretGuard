@@ -2,7 +2,7 @@
 
 **An Explainable GitHub Repository Secret Scanner**
 
-[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen)](https://secret-guard-5c3kck4g5-sankari.vercel.app/)
+[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen)](https://secret-guard-5c3kck4g5-sankari.vercel.app?_vercel_share=gWaBrK2icURJ1GneqltYytIc9OW5LohP)
 
 **Live Application:** https://secret-guard-5c3kck4g5-sankari.vercel.app/
 
